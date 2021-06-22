@@ -5,10 +5,9 @@ import com.protobot.foroblog.model.Category;
 import com.protobot.foroblog.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/category")
@@ -19,6 +18,12 @@ public class CategoryController {
     @Autowired
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
+    }
+
+    @GetMapping
+    public RestResponse<List<Category>> getAllCategories (){
+        List<Category> allCategories = categoryService.getAllCategories();
+        return new RestResponse<>(HttpStatus.OK, allCategories);
     }
 
     @PostMapping

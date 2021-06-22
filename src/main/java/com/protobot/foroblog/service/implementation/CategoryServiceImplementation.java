@@ -36,10 +36,7 @@ public class CategoryServiceImplementation implements CategoryService{
 
     @Override
     public List<Category> getAllCategories() {
-        return null;
+        return categoryRepository.findAll();
     }
 
-    private boolean checkIfString(String particularString){
-        return particularString instanceof String;
-    }
 }
