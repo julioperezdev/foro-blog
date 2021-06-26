@@ -1,6 +1,7 @@
 package com.protobot.foroblog.controller;
 
 import com.protobot.foroblog.dto.response.RestResponse;
+import com.protobot.foroblog.exceptions.service.category.CategoryNullStringException;
 import com.protobot.foroblog.model.Category;
 import com.protobot.foroblog.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +29,14 @@ public class CategoryController {
 
     @PostMapping
     public RestResponse<Category> saveCategory (@RequestBody Category category){
+        if(!checkIfNullOrEmptyString(category.getName()))
+            throw new CategoryNullStringException();
         Category categoryResponse = categoryService.saveCategory(category.getName());
-        if(categoryResponse == null){
-            return new RestResponse<>(HttpStatus.BAD_REQUEST, null);
-        }
         return new RestResponse<>(HttpStatus.CREATED, categoryResponse);
+    }
+
+    private boolean checkIfNullOrEmptyString (String string){
+        return string != null && !string.equals("");
+
     }
 }

@@ -1,5 +1,6 @@
 package com.protobot.foroblog.service.implementation;
 
+import com.protobot.foroblog.exceptions.service.category.CategoryNullStringException;
 import com.protobot.foroblog.model.Category;
 import com.protobot.foroblog.repository.CategoryRepository;
 import com.protobot.foroblog.service.CategoryService;
@@ -22,18 +23,8 @@ public class CategoryServiceImplementation implements CategoryService{
 
 
     @Override
-
     public Category saveCategory(String name) {
-        if(name == null){
-            System.out.println("null chico");
-            return null;
-        }
-        if(!(name instanceof String)){
-            System.out.println("insta");
-            return null;
-        }
-        Category categoryCreated = categoryRepository.saveCategory(name);
-        return categoryCreated;
+        return categoryRepository.saveCategory(name);
     }
 
     @Override

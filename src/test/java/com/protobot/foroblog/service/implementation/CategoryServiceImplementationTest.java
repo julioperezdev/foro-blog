@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -27,7 +26,7 @@ class CategoryServiceImplementationTest {
     CategoryServiceImplementation service;
 
     @Test
-    void itShouldGetAllCategoriesHappyCase() {
+    void itShouldGetAllCategoriesWithZeroSizeHappyCase() {
         //given
         List<Category> allCategories = new ArrayList<>();
         given(categoryRepository.findAll()).willReturn(allCategories);
@@ -39,5 +38,37 @@ class CategoryServiceImplementationTest {
         then(categoryRepository).should().findAll();
         assertNotNull(allCategories);
         assertEquals( 0, allCategories.size());
+    }
+
+    @Test
+    void itShouldGetAllCategoriesWithOneSizeHappyCase() {
+        //given
+        Category category = new Category();
+        List<Category> allCategories = new ArrayList<>();
+        allCategories.add(category);
+        given(categoryRepository.findAll()).willReturn(allCategories);
+
+        //when
+        service.getAllCategories();
+
+        //then
+        then(categoryRepository).should().findAll();
+        assertNotNull(allCategories);
+        assertEquals( 1, allCategories.size());
+    }
+
+    @Test
+    void itShouldSaveCategoryHappyCase() {
+        //given
+        Category category = new Category("AI");
+        given(categoryRepository.saveCategory(anyString())).willReturn(new Category());
+
+        //when
+        Category categoryCreated = categoryRepository.saveCategory(category.getName());
+
+        //then
+        then(categoryRepository).should().saveCategory(anyString());
+        then(categoryRepository).should().saveCategory(category.getName());
+        assertNotNull(categoryCreated);
     }
 }
