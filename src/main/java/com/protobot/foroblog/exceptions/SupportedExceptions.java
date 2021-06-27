@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 
 public enum SupportedExceptions {
 
+    //Categories Exceptions
     CATEGORY_BAD_PREREQUISITES(CategoryNullStringException.class, HttpStatus.BAD_REQUEST),
     CATEGORY_NOT_BE_ZERO(CategoryNotZeroIdException.class, HttpStatus.PRECONDITION_FAILED);
 

@@ -6,10 +6,13 @@ import com.protobot.foroblog.exceptions.controller.category.CategoryNullStringEx
 import com.protobot.foroblog.helper.CheckIfNullOrEmptyString;
 import com.protobot.foroblog.model.Category;
 import com.protobot.foroblog.service.CategoryService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -35,6 +38,32 @@ class CategoryControllerTest {
 
     @InjectMocks
     CategoryController controller;
+
+    @Captor
+    ArgumentCaptor<Long> longArgumentCaptor;
+/*
+    @BeforeEach
+    void setUp() {
+        given(categoryService.getCategoryById(longArgumentCaptor.capture()))
+                .willAnswer(invocation -> {
+                    Optional<Category> category = Optional.of(new Category());
+
+                    Long idCategory = invocation.getArgument(0);
+
+                    if(idCategory.equals(0L)){
+                        throw new CategoryNotZeroIdException();
+                    }
+                    else if(idCategory > 0L){
+                        return category.get();
+                    }
+                    throw new RuntimeException("Invalid argument");
+                });
+    }
+
+
+ */
+
+
 
     @Test
     void itShouldGetAllCategoriesWithEmptyList() {
@@ -90,19 +119,14 @@ class CategoryControllerTest {
 
 
     @Test
-    @DisplayName("Doest`n work")
     void itShouldGetCategoryByIdWhenHaveZeroExecutingException() {
         //given
-        //Long valueToUse = 0L;
-        //Optional<Category> category = Optional.of(new Category(valueToUse, "value"));
-        given(categoryService.getCategoryById(2L -1)).willThrow(CategoryNotZeroIdException.class);
+        Long valueToUse = 0L;
 
         //when
-        //controller.getCategoryById(valueToUse);
-        assertThrows(CategoryNotZeroIdException.class, () -> controller.getCategoryById(2L -1));
-
         //then
-        //then(categoryService).should().getCategoryById(anyLong());
+        then(categoryService).shouldHaveZeroInteractions();
+        assertThrows(CategoryNotZeroIdException.class, () -> controller.getCategoryById(valueToUse));
     }
 
     @Test
@@ -157,5 +181,30 @@ class CategoryControllerTest {
 
         //then
         then(checkIfNullOrEmptyString).should().check(categoryNull.getName());
+    }
+
+    @Test
+    void itShouldDeleteCategoryById() {
+        //given
+        Long id = 2L;
+        given(categoryService.deleteCategoryById(anyLong())).willReturn(true);
+
+        //when
+        controller.deleteCategoryById(id);
+
+        //then
+        then(categoryService).should(times(1)).deleteCategoryById(id);
+        assertTrue(categoryService.deleteCategoryById(id));
+    }
+
+    @Test
+    void itShouldDoesExceptionWithDeleteCategoryById() {
+        //given
+        Long id = 0L;
+
+        //when
+        //then
+        then(categoryService).shouldHaveZeroInteractions();
+        assertThrows(CategoryNotZeroIdException.class, () -> controller.deleteCategoryById(id));
     }
 }

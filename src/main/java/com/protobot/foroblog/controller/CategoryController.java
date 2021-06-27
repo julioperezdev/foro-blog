@@ -17,6 +17,9 @@ import java.util.Optional;
 @RequestMapping("/api/v1/category")
 public class CategoryController {
 
+    private final String MESSAGE_RESPONSE_SUCCESS_DELETED_BY_ID ="Has been removed";
+    private final String MESSAGE_RESPONSE_SUCCESS_GET_CATEGORIES ="Successful search";
+
     private final CategoryService categoryService;
 
     private final CheckIfNullOrEmptyString checkIfNullOrEmptyString;
@@ -30,7 +33,7 @@ public class CategoryController {
     @GetMapping
     public RestResponse<List<Category>> getAllCategories (){
         List<Category> allCategories = categoryService.getAllCategories();
-        return new RestResponse<>(HttpStatus.OK, allCategories);
+        return new RestResponse<>(HttpStatus.OK, MESSAGE_RESPONSE_SUCCESS_GET_CATEGORIES,allCategories);
     }
 
     @GetMapping("/{id}")
@@ -38,7 +41,7 @@ public class CategoryController {
         if(id == 0)
             throw new CategoryNotZeroIdException();
         Optional<Category> category = categoryService.getCategoryById(id);
-        return new RestResponse<>(HttpStatus.OK, category);
+        return new RestResponse<>(HttpStatus.OK, MESSAGE_RESPONSE_SUCCESS_GET_CATEGORIES,category);
     }
 
     @PostMapping
@@ -47,6 +50,14 @@ public class CategoryController {
             throw new CategoryNullStringException();
         Category categoryResponse = categoryService.saveCategory(category.getName());
         return new RestResponse<>(HttpStatus.CREATED, categoryResponse);
+    }
+
+    @DeleteMapping("{id}")
+    public RestResponse<String> deleteCategoryById(@PathVariable Long id){
+        if(id == 0)
+            throw new CategoryNotZeroIdException();
+        categoryService.deleteCategoryById(id);
+        return new RestResponse<>(HttpStatus.ACCEPTED, MESSAGE_RESPONSE_SUCCESS_DELETED_BY_ID);
     }
 
 

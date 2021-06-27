@@ -13,5 +13,7 @@ public interface CategoryService {
 
     Optional<Category> getCategoryById(Long id);
 
-    void deleteCategoryById(Long id);
+    boolean deleteCategoryById(Long id);
+
+    //String deleteCategoryById(Long id);
 }

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.Console;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -51,14 +50,12 @@ public class CategoryServiceImplementation implements CategoryService{
                 .findFirst();
     }
 
-    @Transactional
     @Override
-    public void deleteCategoryById(Long id) {
-        List<Category> allCategories = categoryRepository.findAll();
+    public boolean deleteCategoryById(Long id) {
 
-        Optional<Category> categoriesFiltered = allCategories.stream()
-                .findFirst();
+        return false;
     }
+
 
     public boolean checkThatIsNotNull (Category category){
         return category.getName() != null;

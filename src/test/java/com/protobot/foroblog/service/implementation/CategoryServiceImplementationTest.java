@@ -116,4 +116,5 @@ class CategoryServiceImplementationTest {
         assertTrue(result.isPresent());
         assertEquals(categoryOne, result.get());
     }
+
 }
