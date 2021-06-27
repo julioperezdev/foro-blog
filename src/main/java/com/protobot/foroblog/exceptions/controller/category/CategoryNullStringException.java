@@ -1,6 +1,5 @@
-package com.protobot.foroblog.exceptions.service.category;
+package com.protobot.foroblog.exceptions.controller.category;
 
-import com.protobot.foroblog.model.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

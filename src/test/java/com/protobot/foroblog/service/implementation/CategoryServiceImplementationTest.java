@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -60,15 +61,59 @@ class CategoryServiceImplementationTest {
     @Test
     void itShouldSaveCategoryHappyCase() {
         //given
-        Category category = new Category("AI");
+        Category category = new Category("ai");
         given(categoryRepository.saveCategory(anyString())).willReturn(new Category());
 
         //when
         Category categoryCreated = categoryRepository.saveCategory(category.getName());
 
         //then
-        then(categoryRepository).should().saveCategory(anyString());
         then(categoryRepository).should().saveCategory(category.getName());
         assertNotNull(categoryCreated);
+    }
+
+    @Test
+    void itShouldCheckIfNotNullCaseHappyCase() {
+        //given
+        Category category = new Category(1L, "wallets");
+
+        //when
+        boolean isNotNull = service.checkThatIsNotNull(category);
+
+        //then
+        assertTrue(isNotNull);
+    }
+
+    @Test
+    void itShouldCheckIfNullCaseHappyCase() {
+        //given
+        Category category = new Category(1L, null);
+
+        //when
+        boolean isNull = service.checkThatIsNotNull(category);
+
+        //then
+        assertFalse(isNull);
+    }
+
+    @Test
+    void itShouldGetTheFirstCategoryById() {
+        //given
+
+        Category categoryOne = new Category(1L, "it");
+        Category categoryTwo = new Category(2L, "wallets");
+        List<Category> list = new ArrayList<>();
+        list.add(categoryOne);
+        list.add(categoryTwo);
+        given(categoryRepository.findAll()).willReturn(list);
+
+        //when
+        Optional<Category> result = service.getCategoryById(1L);
+
+        //then
+        then(categoryRepository).should().findAll();
+        then(categoryRepository).shouldHaveNoMoreInteractions();
+        assertTrue(result.isPresent());
+        assertEquals(categoryOne, result.get());
     }
 }

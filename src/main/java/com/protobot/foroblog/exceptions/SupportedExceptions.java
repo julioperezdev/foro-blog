@@ -1,12 +1,13 @@
 package com.protobot.foroblog.exceptions;
 
-import com.protobot.foroblog.exceptions.service.category.CategoryNullStringException;
+import com.protobot.foroblog.exceptions.controller.category.CategoryNotZeroIdException;
+import com.protobot.foroblog.exceptions.controller.category.CategoryNullStringException;
 import org.springframework.http.HttpStatus;
 
 public enum SupportedExceptions {
 
-    CATEGORY_BAD_PREREQUISITES(CategoryNullStringException.class, HttpStatus.PRECONDITION_FAILED);
-    //AUTHOR_NOT_FOUND(AuthorDoesNotExists.class, HttpStatus.NOT_FOUND);
+    CATEGORY_BAD_PREREQUISITES(CategoryNullStringException.class, HttpStatus.BAD_REQUEST),
+    CATEGORY_NOT_BE_ZERO(CategoryNotZeroIdException.class, HttpStatus.PRECONDITION_FAILED);
 
     private Class<? extends Throwable> exceptionClass;
     private HttpStatus status;
