@@ -1,31 +1,34 @@
 package com.protobot.foroblog.controller;
 
-import com.protobot.foroblog.dto.response.RestResponse;
 import com.protobot.foroblog.exceptions.controller.category.CategoryNotZeroIdException;
 import com.protobot.foroblog.exceptions.controller.category.CategoryNullStringException;
 import com.protobot.foroblog.helper.CheckIfNullOrEmptyString;
 import com.protobot.foroblog.model.Category;
 import com.protobot.foroblog.service.CategoryService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryControllerTest {
@@ -38,6 +41,13 @@ class CategoryControllerTest {
 
     @InjectMocks
     CategoryController controller;
+
+    MockMvc mockMvc;
+
+    List<Category> categories = new ArrayList<>();
+    Category categoryA = new Category(1L, "value1");
+    Category categoryB = new Category(2L, "value2");
+    Category categoryC = new Category(3L, "value3");
 
     @Captor
     ArgumentCaptor<Long> longArgumentCaptor;
@@ -63,7 +73,37 @@ class CategoryControllerTest {
 
  */
 
+    @Nested
+    public class TestListHttpResponseHappyCase{
+        List<Category> categories = new ArrayList<>();
+        Category categoryA = new Category(1L, "value1");
+        Category categoryB = new Category(2L, "value2");
+        Category categoryC = new Category(3L, "value3");
 
+        @BeforeEach
+        void setUp() {
+            categories.add(categoryA);
+            categories.add(categoryB);
+            categories.add(categoryC);
+
+            mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        }
+
+        @Test
+        void itShouldGetAllCategoriesHttpResponse() throws Exception {
+            //given
+            given(categoryService.getAllCategories()).willReturn(categories);
+
+            //then
+            mockMvc.perform(get("/api/v1/category"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(jsonPath("$.status", is("OK")))
+                    .andExpect(jsonPath("$.body", hasSize(3)))
+                    .andExpect(jsonPath("$.body[0].id", is(categoryA.getId().intValue())));
+
+        }
+    }
 
     @Test
     void itShouldGetAllCategoriesWithEmptyList() {
@@ -72,14 +112,11 @@ class CategoryControllerTest {
         given(categoryService.getAllCategories()).willReturn(list);
 
         //when
-        //List<Category> allCategories = categoryService.getAllCategories();
         controller.getAllCategories();
 
         //then
         then(categoryService).should().getAllCategories();
         then(categoryService).shouldHaveNoMoreInteractions();
-        //assertEquals(0, allCategories.size());
-        //assertNotNull(allCategories);
     }
 
 
@@ -134,13 +171,14 @@ class CategoryControllerTest {
     void saveCategory() {
         //given
         Category category = new Category("value");
-        given(categoryService.saveCategory(anyString())).willReturn(new Category(1L, category.getName()));
+        given(categoryService.saveCategory(category.getName())).willReturn(new Category(1L, category.getName()));
 
         //when
         controller.saveCategory(category);
 
         //then
-        then(categoryService).should().saveCategory(anyString());
+        //then(categoryService).should().saveCategory(anyString());
+
     }
 
     @Test
@@ -170,11 +208,9 @@ class CategoryControllerTest {
     }
 
     @Test
-    @Disabled
-    void itShouldCheckIfNullNotHappyCase() {
+    void itShouldCheckIfNull() {
         //given
         Category categoryNull = new Category(null);
-        given(checkIfNullOrEmptyString.check(anyString())).willReturn(false);
 
         //when
         assertThrows(CategoryNullStringException.class, () -> controller.saveCategory(categoryNull));
@@ -184,7 +220,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void itShouldDeleteCategoryById() {
+    void itShouldDeleteCategoryByIdHappyCase() {
         //given
         Long id = 2L;
         given(categoryService.deleteCategoryById(anyLong())).willReturn(true);
@@ -198,7 +234,7 @@ class CategoryControllerTest {
     }
 
     @Test
-    void itShouldDoesExceptionWithDeleteCategoryById() {
+    void itShouldDoesDeleteCategoryByIdWithException() {
         //given
         Long id = 0L;
 
