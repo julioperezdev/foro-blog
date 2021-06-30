@@ -17,12 +17,12 @@ class ConvertStringToLowerCaseHelperTest {
     @Test
     void itShouldCheckIfConvertToLowerCaseHappyCase() {
         //given
-        String oldString = "Wallets";
+        String oldString = "321";
 
         //when
         String stringConverted = service.convert(oldString);
 
         //then
-        assertEquals("wallets", stringConverted);
+        assertEquals("321", stringConverted);
     }
 }
