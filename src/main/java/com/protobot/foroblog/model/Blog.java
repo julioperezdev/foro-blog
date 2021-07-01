@@ -22,6 +22,11 @@ public class Blog {
     private String description;
 
 
+    public Blog(String name, Instant dates, String description) {
+        this.name = name;
+        this.dates = dates;
+        this.description = description;
+    }
 
     public Blog(Long id, String name, Instant dates, String description) {
         this.id = id;
