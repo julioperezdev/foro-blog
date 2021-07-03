@@ -6,11 +6,10 @@ import com.protobot.foroblog.model.Category;
 import com.protobot.foroblog.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/blog")
@@ -23,9 +22,27 @@ public class BlogController {
         this.blogService = blogService;
     }
 
-    @GetMapping()
+    @GetMapping
     public RestResponse<List<Blog>> getAllBlogs() {
         List<Blog> allBlog = blogService.getAllBlog();
         return new RestResponse<>(HttpStatus.ACCEPTED, allBlog);
+    }
+
+    @GetMapping("/{id}")
+    public RestResponse<Optional<Blog>> getBlogById(@PathVariable Long id) {
+        Optional<Blog> blogById = blogService.getBlogById(id);
+        return new RestResponse<>(HttpStatus.ACCEPTED, blogById);
+    }
+
+    @PostMapping
+    public RestResponse<Blog> saveBlog(Blog blog) {
+        Blog blogSaved = blogService.saveBlog(blog);
+        return new RestResponse<>(HttpStatus.CREATED, blogSaved);
+    }
+
+    @DeleteMapping("/{id}")
+    public RestResponse<String> deleteBlogById(@PathVariable Long id) {
+        String stringResponse = blogService.deleteBlogById(id);
+        return new RestResponse<>(HttpStatus.GONE, stringResponse);
     }
 }

@@ -16,14 +16,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -39,8 +39,13 @@ class BlogControllerTest {
 
     MockMvc mockMvc;
 
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+    }
+
     @Nested
-    public class itShouldGetAllBlog{
+    public class itShouldGetAllBlogCase{
 
         List<Blog> blogs = new ArrayList<>();
         Blog blogA = new Blog("first title", Instant.now(), "first description");
@@ -52,12 +57,10 @@ class BlogControllerTest {
             blogs.add(blogA);
             blogs.add(blogB);
             blogs.add(blogC);
-
-            mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         }
 
         @Test
-        void itShouldGetAllBlog() {
+        void itShouldGetAllBlogHappyCase() throws Exception {
             //given
             given(blogService.getAllBlog()).willReturn(blogs);
 
@@ -67,25 +70,73 @@ class BlogControllerTest {
             //then
             then(blogService).should().getAllBlog();
             assertEquals(3, blogs.size());
-        }
-
-        @Test
-        void itShouldGetAllBlogWithHttpResponseOK() throws Exception {
-            //given
-            given(blogService.getAllBlog()).willReturn(blogs);
-//
-//            //when
-//            controller.getAllBlogs();
-
-            //then
             mockMvc.perform(get("/api/v1/blog"))
                     //.andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     //.andExpect(jsonPath("$.status", is("OK")))
                     .andExpect(jsonPath("$.body", hasSize(3)));
         }
+    }
+
+    @Nested
+    public class itShouldGetBlogByIdCase{
+
+        Blog blog = new Blog(1L,"title", Instant.now(), "description");
 
 
+        @Test
+        void itShouldGetBlogByIdHappyCase() throws Exception {
+            //given
+            Long id = 1L;
+            given(blogService.getBlogById(anyLong())).willReturn(Optional.of(blog));
 
+            //when
+            controller.getBlogById(id);
+
+            //then
+            then(blogService).should().getBlogById(anyLong());
+            mockMvc.perform(get("/api/v1/blog/"+blog.getId()))
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        }
+    }
+
+    @Nested
+    public class itShouldSaveCase{
+
+        Blog blog = new Blog(1L,"title", Instant.now(), "description");
+
+        @Test
+        void itShouldSaveBlogHappyCase() throws Exception {
+            //given
+            given(blogService.saveBlog(any(Blog.class))).willReturn(blog);
+
+            //when
+            controller.saveBlog(blog);
+
+            //then
+            then(blogService).should().saveBlog(any(Blog.class));
+            mockMvc.perform(post("/api/v1/blog/"))
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        }
+    }
+
+    @Nested
+    public class itShouldDeleteByIdCase{
+
+        @Test
+        void itShouldDeleteByIdHappyCase() throws Exception {
+            //given
+            Long id = 1L;
+            String responseService = "OK";
+            given(blogService.deleteBlogById(anyLong())).willReturn(responseService);
+
+            //when
+            controller.deleteBlogById(id);
+
+            //then
+            then(blogService).should().deleteBlogById(id);
+            mockMvc.perform(delete("/api/v1/blog/"+id))
+                    .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        }
     }
 }

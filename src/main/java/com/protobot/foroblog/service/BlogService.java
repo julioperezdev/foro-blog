@@ -9,9 +9,9 @@ public interface BlogService {
 
     List<Blog> getAllBlog();
 
-    //Optional<Blog> getBlogById(Long id);
+    Optional<Blog> getBlogById(Long id);
 
-    //Blog saveCategory(Blog blog);
+    Blog saveBlog(Blog blog);
 
-
+    String deleteBlogById(Long id);
 }
