@@ -35,7 +35,7 @@ public class BlogController {
     }
 
     @PostMapping
-    public RestResponse<Blog> saveBlog(Blog blog) {
+    public RestResponse<Blog> saveBlog(@RequestBody Blog blog) {
         Blog blogSaved = blogService.saveBlog(blog);
         return new RestResponse<>(HttpStatus.CREATED, blogSaved);
     }

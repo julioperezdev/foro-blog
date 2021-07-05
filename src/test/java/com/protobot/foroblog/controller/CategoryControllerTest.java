@@ -1,7 +1,8 @@
 package com.protobot.foroblog.controller;
 
-import com.protobot.foroblog.exceptions.controller.category.CategoryNotZeroIdException;
-import com.protobot.foroblog.exceptions.controller.category.CategoryNullStringException;
+
+
+import com.protobot.foroblog.exceptions.helper.HelperCheckIfNullOrZeroLongException;
 import com.protobot.foroblog.helper.CheckIfNullOrEmptyString;
 import com.protobot.foroblog.model.Category;
 import com.protobot.foroblog.service.CategoryService;
@@ -163,7 +164,7 @@ class CategoryControllerTest {
         //when
         //then
         then(categoryService).shouldHaveZeroInteractions();
-        assertThrows(CategoryNotZeroIdException.class, () -> controller.getCategoryById(valueToUse));
+        assertThrows(HelperCheckIfNullOrZeroLongException.class, () -> controller.getCategoryById(valueToUse));
     }
 
     @Test
@@ -181,43 +182,21 @@ class CategoryControllerTest {
 
     }
 
-    @Test
-    void itShouldCheckIfNullHappyCase() {
-        //given
-        Category category = new Category("value");
-        given(checkIfNullOrEmptyString.check(anyString())).willReturn(true);
+//    @Test
+//    void itShouldCheckIfNullHappyCase() {
+//        //given
+//        Category category = new Category("value");
+//        given(checkIfNullOrEmptyString.check(anyString())).willReturn(true);
+//
+//        //when
+//        controller.saveCategory(category);
+//
+//        //then
+//        then(checkIfNullOrEmptyString).should().check(anyString());
+//    }
 
-        //when
-        controller.saveCategory(category);
 
-        //then
-        then(checkIfNullOrEmptyString).should().check(anyString());
-    }
 
-    @Test
-    void itShouldCheckIfEmptyNotHappyCase() {
-        //given
-        Category categoryEmpty = new Category("");
-        given(checkIfNullOrEmptyString.check(anyString())).willReturn(false);
-
-        //when
-        assertThrows(CategoryNullStringException.class, () -> controller.saveCategory(categoryEmpty));
-
-        //then
-        then(checkIfNullOrEmptyString).should().check(categoryEmpty.getName());
-    }
-
-    @Test
-    void itShouldCheckIfNull() {
-        //given
-        Category categoryNull = new Category(null);
-
-        //when
-        assertThrows(CategoryNullStringException.class, () -> controller.saveCategory(categoryNull));
-
-        //then
-        then(checkIfNullOrEmptyString).should().check(categoryNull.getName());
-    }
 
     @Test
     void itShouldDeleteCategoryByIdHappyCase() {
@@ -241,6 +220,6 @@ class CategoryControllerTest {
         //when
         //then
         then(categoryService).shouldHaveZeroInteractions();
-        assertThrows(CategoryNotZeroIdException.class, () -> controller.deleteCategoryById(id));
+        assertThrows(HelperCheckIfNullOrZeroLongException.class, () -> controller.deleteCategoryById(id));
     }
 }

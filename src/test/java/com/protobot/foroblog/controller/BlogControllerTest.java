@@ -48,9 +48,9 @@ class BlogControllerTest {
     public class itShouldGetAllBlogCase{
 
         List<Blog> blogs = new ArrayList<>();
-        Blog blogA = new Blog("first title", Instant.now(), "first description");
-        Blog blogB = new Blog("second title", Instant.now(), "second description");
-        Blog blogC = new Blog("third title", Instant.now(), "third description");
+        Blog blogA = new Blog("first title", Instant.now(), "first description", 1L);
+        Blog blogB = new Blog("second title", Instant.now(), "second description", 2L);
+        Blog blogC = new Blog("third title", Instant.now(), "third description", 3L);
 
         @BeforeEach
         void setUp() {

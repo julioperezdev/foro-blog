@@ -1,5 +1,7 @@
 package com.protobot.foroblog.service.implementation;
 
+import com.protobot.foroblog.exceptions.helper.HelperCheckIfNullOrEmptyStringException;
+import com.protobot.foroblog.helper.CheckIfNullOrEmptyString;
 import com.protobot.foroblog.helper.ConvertStringToLowerCaseHelper;
 import com.protobot.foroblog.model.Category;
 import com.protobot.foroblog.repository.CategoryRepository;
@@ -24,6 +26,9 @@ class CategoryServiceImplementationTest {
 
     @Mock
     ConvertStringToLowerCaseHelper convertStringToLowerCaseHelper;
+
+    @Mock
+    CheckIfNullOrEmptyString checkIfNullOrEmptyString;
 
     @Mock
     CategoryRepository categoryRepository;
@@ -80,6 +85,33 @@ class CategoryServiceImplementationTest {
         then(convertStringToLowerCaseHelper).should().convert(category.getName());
         then(categoryRepository).should().saveCategory(category.getName());
         //assertNotNull(categoryCreated);
+    }
+
+    @Test
+    @Disabled
+    void itShouldCheckIfEmptyNotHappyCase() {
+        //given
+        Category categoryEmpty = new Category("");
+        //given(checkIfNullOrEmptyString.check(anyString())).willReturn(false);
+
+        //when
+        assertThrows(HelperCheckIfNullOrEmptyStringException.class, () -> service.saveCategory(categoryEmpty.getName()));
+
+        //then
+        //then(checkIfNullOrEmptyString).should().check(categoryEmpty.getName());
+    }
+
+    @Test
+    @Disabled
+    void itShouldCheckIfNull() {
+        //given
+        Category categoryNull = new Category(null);
+
+        //when
+        assertThrows(HelperCheckIfNullOrEmptyStringException.class, () -> service.saveCategory(categoryNull.getName()));
+
+        //then
+        then(checkIfNullOrEmptyString).should().check(categoryNull.getName());
     }
 
     @Test
