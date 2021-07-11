@@ -96,7 +96,7 @@ class CategoryControllerTest {
             given(categoryService.getAllCategories()).willReturn(categories);
 
             //then
-            mockMvc.perform(get("/api/v1/category"))
+            mockMvc.perform(get("/api/v1/category/getall"))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(jsonPath("$.status", is("OK")))
@@ -130,13 +130,11 @@ class CategoryControllerTest {
         given(categoryService.getAllCategories()).willReturn(list);
 
         //when
-        //List<Category> allCategories = categoryService.getAllCategories();
         controller.getAllCategories();
 
         //then
         then(categoryService).should().getAllCategories();
         then(categoryService).shouldHaveNoMoreInteractions();
-        //assertEquals(1, allCategories.size());
     }
 
     @Test
@@ -156,19 +154,18 @@ class CategoryControllerTest {
 
 
 
-    @Test
-    void itShouldGetCategoryByIdWhenHaveZeroExecutingException() {
-        //given
-        Long valueToUse = 0L;
+//    @Test
+//    void itShouldGetCategoryByIdWhenHaveZeroExecutingException() {
+//        //given
+//        Long valueToUse = 0L;
+//
+//        //when
+//        //then
+//        then(categoryService).shouldHaveZeroInteractions();
+//        assertThrows(HelperCheckIfNullOrZeroLongException.class, () -> controller.getCategoryById(valueToUse));
+//    }
 
-        //when
-        //then
-        then(categoryService).shouldHaveZeroInteractions();
-        assertThrows(HelperCheckIfNullOrZeroLongException.class, () -> controller.getCategoryById(valueToUse));
-    }
-
     @Test
-    @Disabled
     void saveCategory() {
         //given
         Category category = new Category("value");
@@ -178,7 +175,7 @@ class CategoryControllerTest {
         controller.saveCategory(category);
 
         //then
-        //then(categoryService).should().saveCategory(anyString());
+        then(categoryService).should().saveCategory(anyString());
 
     }
 
@@ -212,14 +209,14 @@ class CategoryControllerTest {
         assertTrue(categoryService.deleteCategoryById(id));
     }
 
-    @Test
-    void itShouldDoesDeleteCategoryByIdWithException() {
-        //given
-        Long id = 0L;
-
-        //when
-        //then
-        then(categoryService).shouldHaveZeroInteractions();
-        assertThrows(HelperCheckIfNullOrZeroLongException.class, () -> controller.deleteCategoryById(id));
-    }
+//    @Test
+//    void itShouldDoesDeleteCategoryByIdWithException() {
+//        //given
+//        Long id = 0L;
+//
+//        //when
+//        //then
+//        then(categoryService).shouldHaveZeroInteractions();
+//        assertThrows(HelperCheckIfNullOrZeroLongException.class, () -> controller.deleteCategoryById(id));
+//    }
 }

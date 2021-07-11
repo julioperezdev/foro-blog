@@ -34,7 +34,7 @@ public class BlogServiceImplementation implements BlogService {
 
     @Override
     public List<Blog> getAllBlog() {
-        return blogRepository.findAll();
+        return blogRepository.getAllBlogs();
     }
 
     @Override

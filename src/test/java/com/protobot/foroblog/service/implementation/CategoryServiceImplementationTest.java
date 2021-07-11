@@ -2,6 +2,7 @@ package com.protobot.foroblog.service.implementation;
 
 import com.protobot.foroblog.exceptions.helper.HelperCheckIfNullOrEmptyStringException;
 import com.protobot.foroblog.helper.CheckIfNullOrEmptyString;
+import com.protobot.foroblog.helper.CheckIfNullOrZeroLong;
 import com.protobot.foroblog.helper.ConvertStringToLowerCaseHelper;
 import com.protobot.foroblog.model.Category;
 import com.protobot.foroblog.repository.CategoryRepository;
@@ -29,6 +30,9 @@ class CategoryServiceImplementationTest {
 
     @Mock
     CheckIfNullOrEmptyString checkIfNullOrEmptyString;
+
+    @Mock
+    CheckIfNullOrZeroLong checkIfNullOrZeroLong;
 
     @Mock
     CategoryRepository categoryRepository;
@@ -72,18 +76,19 @@ class CategoryServiceImplementationTest {
     @Disabled
     void itShouldSaveCategoryHappyCase() {
         //given
-        Category category = new Category("ai");
+        Category categoryBefore = new Category("ai");
+        Category categoryAfter = new Category("ai");
         given(convertStringToLowerCaseHelper.convert(anyString()))
-                .willReturn(category.getName());
+                .willReturn(categoryAfter.getName());
         given(categoryRepository.saveCategory(anyString()))
-                .willReturn(new Category(1L, category.getName()));
+                .willReturn(new Category(1L, categoryAfter.getName()));
 
         //when
-        Category categoryCreated = categoryRepository.saveCategory(category.getName());
+        Category categoryCreated = categoryRepository.saveCategory(categoryBefore.getName());
 
         //then
-        then(convertStringToLowerCaseHelper).should().convert(category.getName());
-        then(categoryRepository).should().saveCategory(category.getName());
+        then(convertStringToLowerCaseHelper).should().convert(categoryBefore.getName());
+        then(categoryRepository).should().saveCategory(categoryAfter.getName());
         //assertNotNull(categoryCreated);
     }
 
@@ -112,30 +117,6 @@ class CategoryServiceImplementationTest {
 
         //then
         then(checkIfNullOrEmptyString).should().check(categoryNull.getName());
-    }
-
-    @Test
-    void itShouldCheckIfNotNullCaseHappyCase() {
-        //given
-        Category category = new Category(1L, "wallets");
-
-        //when
-        boolean isNotNull = service.checkThatIsNotNull(category);
-
-        //then
-        assertTrue(isNotNull);
-    }
-
-    @Test
-    void itShouldCheckIfNullCaseHappyCase() {
-        //given
-        Category category = new Category(1L, null);
-
-        //when
-        boolean isNull = service.checkThatIsNotNull(category);
-
-        //then
-        assertFalse(isNull);
     }
 
     @Test

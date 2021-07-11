@@ -62,12 +62,6 @@ public class CategoryServiceImplementation implements CategoryService{
     @Override
     public boolean deleteCategoryById(Long id) {
         this.checkIfNullOrZeroLong.check(id);
-        return false;
+        return categoryRepository.deleteCategoryById(id) == null;
     }
-
-
-    public boolean checkThatIsNotNull (Category category){
-        return category.getName() != null;
-    }
-
 }

@@ -25,25 +25,25 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping
+    @GetMapping("/getall")
     public RestResponse<List<Category>> getAllCategories (){
         List<Category> allCategories = categoryService.getAllCategories();
         return new RestResponse<>(HttpStatus.OK, MESSAGE_RESPONSE_SUCCESS_GET_CATEGORIES,allCategories);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public RestResponse<Optional<Category>> getCategoryById(@PathVariable Long id){
         Optional<Category> category = categoryService.getCategoryById(id);
         return new RestResponse<>(HttpStatus.OK, MESSAGE_RESPONSE_SUCCESS_GET_CATEGORIES,category);
     }
 
-    @PostMapping
+    @PostMapping("/save")
     public RestResponse<Category> saveCategory (@RequestBody Category category){
         Category categoryResponse = categoryService.saveCategory(category.getName());
         return new RestResponse<>(HttpStatus.CREATED, categoryResponse);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/delete/{id}")
     public RestResponse<String> deleteCategoryById(@PathVariable Long id){
         categoryService.deleteCategoryById(id);
         return new RestResponse<>(HttpStatus.ACCEPTED, MESSAGE_RESPONSE_SUCCESS_DELETED_BY_ID);

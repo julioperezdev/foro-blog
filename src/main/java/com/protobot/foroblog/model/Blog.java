@@ -6,11 +6,13 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.Instant;
 
 @Getter
 @Setter
-@Entity(name = "Blog")
+@Entity
+@Table(name = "Blog")
 public class Blog {
 
     @Id
@@ -22,7 +24,7 @@ public class Blog {
 
     private String description;
 
-    @Column(name = "idCategory")
+    @Column(name = "idcategory")
     private Long idCategory;
 
 
@@ -33,7 +35,7 @@ public class Blog {
         this.idCategory = idCategory;
     }
 
-    public Blog(Long id, String name, Instant dates, String description) {
+    public Blog(Long id, String name, Instant dates, String description, Long idCategory) {
         this.id = id;
         this.name = name;
         this.dates = dates;

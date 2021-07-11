@@ -7,9 +7,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
+import java.util.List;
 
 @Repository
 public interface BlogRepository extends JpaRepository<Blog, Long> {
+
+    @Query(value = "SELECT * FROM Blog ", nativeQuery = true)
+    List<Blog> getAllBlogs();
 
     @Query(value = "EXEC saveBlog @Name = :name, @Dates = :dates, @Description = :description, @IdCategory = :idCategory ", nativeQuery = true)
     Blog saveBlog (@Param("name") String name,

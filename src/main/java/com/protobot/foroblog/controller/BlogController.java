@@ -22,25 +22,25 @@ public class BlogController {
         this.blogService = blogService;
     }
 
-    @GetMapping
+    @GetMapping("/getall")
     public RestResponse<List<Blog>> getAllBlogs() {
         List<Blog> allBlog = blogService.getAllBlog();
         return new RestResponse<>(HttpStatus.ACCEPTED, allBlog);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public RestResponse<Optional<Blog>> getBlogById(@PathVariable Long id) {
         Optional<Blog> blogById = blogService.getBlogById(id);
         return new RestResponse<>(HttpStatus.ACCEPTED, blogById);
     }
 
-    @PostMapping
+    @PostMapping("/save")
     public RestResponse<Blog> saveBlog(@RequestBody Blog blog) {
         Blog blogSaved = blogService.saveBlog(blog);
         return new RestResponse<>(HttpStatus.CREATED, blogSaved);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public RestResponse<String> deleteBlogById(@PathVariable Long id) {
         String stringResponse = blogService.deleteBlogById(id);
         return new RestResponse<>(HttpStatus.GONE, stringResponse);
