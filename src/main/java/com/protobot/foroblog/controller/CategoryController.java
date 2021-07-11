@@ -1,9 +1,6 @@
 package com.protobot.foroblog.controller;
 
 import com.protobot.foroblog.dto.response.RestResponse;
-import com.protobot.foroblog.exceptions.controller.category.CategoryNotZeroIdException;
-import com.protobot.foroblog.exceptions.controller.category.CategoryNullStringException;
-import com.protobot.foroblog.helper.CheckIfNullOrEmptyString;
 import com.protobot.foroblog.model.Category;
 import com.protobot.foroblog.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,40 +19,32 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    private final CheckIfNullOrEmptyString checkIfNullOrEmptyString;
 
     @Autowired
-    public CategoryController(CategoryService categoryService, CheckIfNullOrEmptyString checkIfNullOrEmptyString) {
+    public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
-        this.checkIfNullOrEmptyString = checkIfNullOrEmptyString;
     }
 
-    @GetMapping
+    @GetMapping("/getall")
     public RestResponse<List<Category>> getAllCategories (){
         List<Category> allCategories = categoryService.getAllCategories();
         return new RestResponse<>(HttpStatus.OK, MESSAGE_RESPONSE_SUCCESS_GET_CATEGORIES,allCategories);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public RestResponse<Optional<Category>> getCategoryById(@PathVariable Long id){
-        if(id == 0)
-            throw new CategoryNotZeroIdException();
         Optional<Category> category = categoryService.getCategoryById(id);
         return new RestResponse<>(HttpStatus.OK, MESSAGE_RESPONSE_SUCCESS_GET_CATEGORIES,category);
     }
 
-    @PostMapping
+    @PostMapping("/save")
     public RestResponse<Category> saveCategory (@RequestBody Category category){
-        if(!checkIfNullOrEmptyString.check(category.getName()))
-            throw new CategoryNullStringException();
         Category categoryResponse = categoryService.saveCategory(category.getName());
         return new RestResponse<>(HttpStatus.CREATED, categoryResponse);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/delete/{id}")
     public RestResponse<String> deleteCategoryById(@PathVariable Long id){
-        if(id == 0)
-            throw new CategoryNotZeroIdException();
         categoryService.deleteCategoryById(id);
         return new RestResponse<>(HttpStatus.ACCEPTED, MESSAGE_RESPONSE_SUCCESS_DELETED_BY_ID);
     }

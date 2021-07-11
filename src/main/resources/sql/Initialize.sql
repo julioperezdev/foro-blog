@@ -29,9 +29,12 @@ CREATE TABLE Blog(
                      name VARCHAR(200) NOT NULL,
                      dates DATETIME NOT NULL,
                      description VARCHAR(3000) NOT NULL,
-                     PRIMARY KEY (id)
+                     idCategory INT NOT NULL,
+                     PRIMARY KEY (id),
+                     FOREIGN KEY (idCategory) REFERENCES Category(id)
 );
 
+--------------------
 
 CREATE PROCEDURE saveCategory
 @Name VARCHAR(200)
@@ -46,3 +49,31 @@ GO;
 
 EXEC saveCategory @Name= 'Tech'
 
+-----------------
+
+CREATE PROCEDURE deleteBlogById
+@Id INT
+AS
+BEGIN
+    DELETE FROM Blog where id = @Id
+END
+BEGIN
+    SELECT * FROM Blog WHERE id = @Id;
+end
+GO;
+
+
+------------------
+CREATE PROCEDURE saveBlog
+    @Name VARCHAR(200),
+    @Dates datetime,
+    @Description VARCHAR(3000),
+    @IdCategory INT
+AS
+BEGIN
+    INSERT INTO Blog (name, dates, description, idCategory) VALUES(@Name, @Dates, @Description, @IdCategory);
+END
+BEGIN
+    SELECT TOP 1 * FROM Blog WHERE name = @Name;
+end
+go
